@@ -1,0 +1,16 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Reminder">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="reminder"
+            android:title="@string/pref_title_water_reminder"/>
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="reminder"
+            android:key="notifications_new_message_vibrate"
+            android:title="@string/pref_title_vibrate"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

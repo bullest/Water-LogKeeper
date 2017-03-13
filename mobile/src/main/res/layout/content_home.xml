@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.bullest.water_logkeeper.HomeActivity"
+    tools:showIn="@layout/activity_home"
+    android:background="@color/colorBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/percentage_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:id="@+id/progressBar"
+                    app:rcRadius="12dp"
+                    app:rcBackgroundPadding="4dp"
+                    app:rcProgressColor="@color/colorAccent"
+                    app:rcSecondaryProgressColor="@color/colorPrimaryLight"
+                    app:rcBackgroundColor="@color/colorBackground"
+                    android:padding="4dp"
+                    app:rcSecondaryProgress="0.99"
+                    app:rcMax="1.00"
+                />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/stat_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="0.9"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_100ml"
+                    android:id="@+id/button_100"
+                    android:maxLines="1"
+                    android:textAllCaps="false"
+                    style="@style/Button"/>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_200ml"
+                    android:id="@+id/button_200"
+                    style="@style/Button"
+                    android:textAllCaps="false"/>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1.1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_300ml"
+                    android:id="@+id/button_300"
+                    style="@style/Button"
+                    android:textAllCaps="false"/>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1.2"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_400ml"
+                    android:id="@+id/button_400"
+                    style="@style/Button"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/editable_volume"
+                    android:inputType="number"
+                    android:layout_margin="4dp"
+                    android:cursorVisible="false"
+                    android:hint="@string/input_your_amount"
+                    android:selectAllOnFocus="true"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/button_confirm"
+                    android:layout_margin="4dp"
+                    android:text="@string/confirm"
+                    android:enabled="false"
+                    style="@style/Button"
+                    android:includeFontPadding="true"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
