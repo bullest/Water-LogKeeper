@@ -1,4 +1,4 @@
-package com.bullest.water_logkeeper;
+package com.bullest.waterkeeper;
 
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;

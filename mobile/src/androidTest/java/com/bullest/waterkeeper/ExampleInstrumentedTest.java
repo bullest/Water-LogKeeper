@@ -1,4 +1,4 @@
-package com.bullest.water_logkeeper;
+package com.bullest.waterkeeper;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

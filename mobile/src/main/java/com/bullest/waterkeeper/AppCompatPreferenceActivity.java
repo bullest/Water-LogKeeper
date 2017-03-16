@@ -1,4 +1,4 @@
-package com.bullest.water_logkeeper;
+package com.bullest.waterkeeper;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "533414206515",
+    "firebase_url": "https://waterkeeper-3341d.firebaseio.com",
+    "project_id": "waterkeeper-3341d",
+    "storage_bucket": "waterkeeper-3341d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533414206515:android:96a5aeca31272655",
+        "android_client_info": {
+          "package_name": "com.bullest.waterkeeper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "533414206515-4meuoi8t3nef26vedac34b5i2101mfvf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bullest.waterkeeper",
+            "certificate_hash": "61da60d7cb7f8bec2374426f0e95f136fb9e7ac8"
+          }
+        },
+        {
+          "client_id": "533414206515-an727khmmc52a3i9ij9jpeit0jijmg6o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bullest.waterkeeper",
+            "certificate_hash": "6b03ab0527677ddb11df1356a4d1533dfd78b509"
+          }
+        },
+        {
+          "client_id": "533414206515-4mpbq6inf7mbma9j78l9i06epamjo0ic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFyBsqtPqVtpCfN9tDycchISXIy-2FHLM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "533414206515-4mpbq6inf7mbma9j78l9i06epamjo0ic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
