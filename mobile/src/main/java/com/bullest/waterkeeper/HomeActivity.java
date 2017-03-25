@@ -31,6 +31,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -61,6 +63,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
     static final String KEY_CUSTOMIEZED_VOLUME = "customized_volume";
     static final String KEY_DATA = "data";
     public static final int RC_SIGN_IN = 1;
+    public String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,8 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         volume = (EditText) findViewById(R.id.editable_volume);
 
         sharedPreferences = getSharedPreferences(KEY_DATA, MODE_PRIVATE);
+
+        uid = this.getSharedPreferences("Login", 0).getString("uid", null);
 
         String lastVolume = sharedPreferences.getString(KEY_CUSTOMIEZED_VOLUME, "");
         if (!lastVolume.isEmpty()) {
@@ -169,33 +174,37 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("533414206515-4mpbq6inf7mbma9j78l9i06epamjo0ic.apps.googleusercontent.com")
-                .requestEmail()
-                .build();
+        if (uid == null){
+            signInCard.setVisibility(View.VISIBLE);
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken("533414206515-4mpbq6inf7mbma9j78l9i06epamjo0ic.apps.googleusercontent.com")
+                    .requestEmail()
+                    .build();
 
-        // Build a GoogleApiClient with access to the Google Sign-In API and the
-        // options specified by gso.
-        final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+            // Build a GoogleApiClient with access to the Google Sign-In API and the
+            // options specified by gso.
+            final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, this)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
 
-        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
-        });
+            findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                    startActivityForResult(signInIntent, RC_SIGN_IN);
+                }
+            });
 
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            mAuth = FirebaseAuth.getInstance();
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-            }
-        };
+                }
+            };
+        }
+
     }
 
     @Override
@@ -221,7 +230,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -236,6 +245,11 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                             Log.w("GoogleSignIn", "signInWithCredential", task.getException());
                             Toast.makeText(HomeActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                        } else {
+                            SharedPreferences sp = getSharedPreferences("Login", 0);
+                            SharedPreferences.Editor ed = sp.edit();
+                            ed.putString("uid", account.getId());
+                            ed.commit();
                         }
                         // ...
                     }
@@ -269,7 +283,9 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        mAuth.addAuthStateListener(mAuthListener);
+        if (uid == null) {
+            mAuth.addAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -285,6 +301,8 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onAddAmountEvent(AddRecordEvent event) {
         WaterRecord record = new WaterRecord(event.amount, event.time.getTimeInMillis());
         record.save();
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("users");
+        database.child("user").child(uid).setValue(uid);
         updateDailyProgress();
     }
 
