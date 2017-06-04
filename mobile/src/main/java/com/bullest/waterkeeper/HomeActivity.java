@@ -136,10 +136,9 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                 final int amount = 100;
 
                 EventBus.getDefault().post(new AddRecordEvent(amount, now));
-                Log.d("Event", "add " + amount + "mL at" + now.getTime().toString());
 
                 Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
-                        .setAction("Undo", new View.OnClickListener() {
+                        .setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 EventBus.getDefault().post(new DeleteRecordEvent());
@@ -147,6 +146,65 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                         }).show();
             }
         });
+
+        button200.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+
+                final int amount = 200;
+
+                EventBus.getDefault().post(new AddRecordEvent(amount, now));
+
+                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                EventBus.getDefault().post(new DeleteRecordEvent());
+                            }
+                        }).show();
+            }
+        });
+
+        button300.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+
+                final int amount = 300;
+
+                EventBus.getDefault().post(new AddRecordEvent(amount, now));
+
+                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                EventBus.getDefault().post(new DeleteRecordEvent());
+                            }
+                        }).show();
+            }
+        });
+
+        button400.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+
+                final int amount = 400;
+
+                EventBus.getDefault().post(new AddRecordEvent(amount, now));
+
+                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                EventBus.getDefault().post(new DeleteRecordEvent());
+                            }
+                        }).show();
+            }
+        });
+
+
 
         button_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,10 +218,9 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                 editor.commit();
 
                 EventBus.getDefault().post(new AddRecordEvent(amount, now));
-                Log.d("Event", "add " + amount + "mL at" + now.getTime().toString());
 
                 Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
-                        .setAction("Undo", new View.OnClickListener() {
+                        .setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 EventBus.getDefault().post(new DeleteRecordEvent());
@@ -175,7 +232,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         if (uid == null){
-            signInCard.setVisibility(View.VISIBLE);
+            signInCard.setVisibility(View.INVISIBLE);
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken("533414206515-4mpbq6inf7mbma9j78l9i06epamjo0ic.apps.googleusercontent.com")
                     .requestEmail()
@@ -301,8 +358,8 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onAddAmountEvent(AddRecordEvent event) {
         WaterRecord record = new WaterRecord(event.amount, event.time.getTimeInMillis());
         record.save();
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference("users");
-        database.child("user").child(uid).setValue(uid);
+//        DatabaseReference database = FirebaseDatabase.getInstance().getReference("users");
+//        database.child("user").child(uid).setValue(uid);
         updateDailyProgress();
     }
 

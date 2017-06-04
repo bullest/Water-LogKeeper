@@ -13,4 +13,20 @@
     <color name="colorTextPrimaryDarkBackground">#B3FFFFFF</color>
     <color name="colorBackground">#F0F0F0</color>
 
+
+    <color name="textPrimaryLightBackground">#DE000000</color>
+    <color final="true" name="textSecondaryLightBackground">#8A000000</color>
+    <color final="true" name="textHintLightBackground">#61000000</color>
+    <color final="true" name="textDisabledLightBackground">#61000000</color>
+    <color final="true" name="dividerLightBackground">#1F000000</color>
+    <color final="true" name="iconEnabledLightBackground">#8A000000</color>
+    <color final="true" name="iconDisabledLightBackground">#42000000</color>
+
+    <color final="true" name="textPrimaryDarkBackground">#FFFFFFFF</color>
+    <color final="true" name="textSecondaryDarkBackground">#B3FFFFFF</color>
+    <color final="true" name="textHintDarkBackground">#4DFFFFFF</color>
+    <color final="true" name="textDisabledDarkBackground">#4DFFFFFF</color>
+    <color final="true" name="dividerDarkBackground">#1FFFFFFF</color>
+    <color final="true" name="iconEnabledDarkBackground">#FFFFFFFF</color>
+    <color final="true" name="iconDisabledDarkBackground">#4DFFFFFF</color>
 </resources>
