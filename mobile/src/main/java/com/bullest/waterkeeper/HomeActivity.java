@@ -72,19 +72,59 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        button100 = (Button) findViewById(R.id.button_100);
-        button200 = (Button) findViewById(R.id.button_200);
-        button300 = (Button) findViewById(R.id.button_300);
-        button400 = (Button) findViewById(R.id.button_400);
+        configAddButtons();
+        configCustomAddButtons();
+        configSignIn();
+        configProgress();
+    }
+
+    private void configProgress() {
         progress = (TextRoundCornerProgressBar) findViewById(R.id.progressBar);
+    }
+
+    private void configSignIn() {
         signInCard = (CardView) findViewById(R.id.sign_in_card);
 
+        uid = this.getSharedPreferences("Login", 0).getString("uid", null);
+
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        if (uid == null){
+            signInCard.setVisibility(View.INVISIBLE);
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken("533414206515-4mpbq6inf7mbma9j78l9i06epamjo0ic.apps.googleusercontent.com")
+                    .requestEmail()
+                    .build();
+
+            // Build a GoogleApiClient with access to the Google Sign-In API and the
+            // options specified by gso.
+            final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, this)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+
+            findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                    startActivityForResult(signInIntent, RC_SIGN_IN);
+                }
+            });
+
+            mAuth = FirebaseAuth.getInstance();
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                }
+            };
+        }
+    }
+
+    private void configCustomAddButtons() {
         button_confirm = (Button) findViewById(R.id.button_confirm);
         volume = (EditText) findViewById(R.id.editable_volume);
-
         sharedPreferences = getSharedPreferences(KEY_DATA, MODE_PRIVATE);
-
-        uid = this.getSharedPreferences("Login", 0).getString("uid", null);
 
         String lastVolume = sharedPreferences.getString(KEY_CUSTOMIEZED_VOLUME, "");
         if (!lastVolume.isEmpty()) {
@@ -127,6 +167,40 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
             }
         });
+
+        button_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+
+                final int amount = Integer.parseInt(volume.getText().toString());
+
+                SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
+                editor.putString("customized_volume", volume.getText().toString());
+                editor.commit();
+
+                EventBus.getDefault().post(new AddRecordEvent(amount, now));
+
+                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                EventBus.getDefault().post(new DeleteRecordEvent());
+                            }
+                        }).show();
+            }
+        });
+
+
+
+    }
+
+    private void configAddButtons() {
+
+        button100 = (Button) findViewById(R.id.button_100);
+        button200 = (Button) findViewById(R.id.button_200);
+        button300 = (Button) findViewById(R.id.button_300);
+        button400 = (Button) findViewById(R.id.button_400);
 
         button100.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,61 +280,6 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
 
-        button_confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar now = Calendar.getInstance();
-
-                final int amount = Integer.parseInt(volume.getText().toString());
-
-                SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
-                editor.putString("customized_volume", volume.getText().toString());
-                editor.commit();
-
-                EventBus.getDefault().post(new AddRecordEvent(amount, now));
-
-                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                EventBus.getDefault().post(new DeleteRecordEvent());
-                            }
-                        }).show();
-            }
-        });
-
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        if (uid == null){
-            signInCard.setVisibility(View.INVISIBLE);
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken("533414206515-4mpbq6inf7mbma9j78l9i06epamjo0ic.apps.googleusercontent.com")
-                    .requestEmail()
-                    .build();
-
-            // Build a GoogleApiClient with access to the Google Sign-In API and the
-            // options specified by gso.
-            final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .enableAutoManage(this, this)
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                    .build();
-
-            findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                    startActivityForResult(signInIntent, RC_SIGN_IN);
-                }
-            });
-
-            mAuth = FirebaseAuth.getInstance();
-            mAuthListener = new FirebaseAuth.AuthStateListener() {
-                @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                }
-            };
-        }
 
     }
 
@@ -343,6 +362,12 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         if (uid == null) {
             mAuth.addAuthStateListener(mAuthListener);
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        updateDailyWaterProgress();
     }
 
     @Override

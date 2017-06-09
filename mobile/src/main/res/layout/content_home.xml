@@ -48,7 +48,7 @@
                     app:rcProgressColor="@color/colorAccent"
                     app:rcSecondaryProgressColor="@color/colorPrimaryLight"
                     app:rcBackgroundColor="@color/colorBackground"
-                    android:padding="4dp"
+                    android:padding="1dp"
                     app:rcSecondaryProgress="0.99"
                     app:rcMax="1.00"
                 />
@@ -79,9 +79,9 @@
                     android:layout_height="wrap_content"
                     android:text="@string/_100ml"
                     android:id="@+id/button_100"
-                    android:maxLines="1"
                     android:textAllCaps="false"
-                    style="@style/Button"/>
+                    style="@style/Button"
+                    android:textSize="14sp"/>
                 <Button
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -89,7 +89,8 @@
                     android:text="@string/_200ml"
                     android:id="@+id/button_200"
                     style="@style/Button"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:textSize="14sp"/>
                 <Button
                     android:layout_width="0dp"
                     android:layout_weight="1.1"
