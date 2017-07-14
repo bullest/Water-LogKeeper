@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -432,7 +434,13 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                 .setOnlyAlertOnce(true)
                 .setColor(getResources().getColor(R.color.colorPrimary))
                 .addAction(action)
+                .setVibrate(new long[] { 500, 300, 800, 500, 1000})
+     //        { delay, vibrate, sleep, vibrate, sleep } pattern
+                .setLights(Color.YELLOW, 500, 1000)
                 .build();
+
+        notification.defaults |= Notification.DEFAULT_SOUND;
+
 
         notificationManager.notify(0, notification);
 
