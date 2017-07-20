@@ -396,33 +396,37 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 //        DatabaseReference database = FirebaseDatabase.getInstance().getReference("users");
 //        database.child("user").child(uid).setValue(uid);
         updateDailyProgress();
-        updateNotification();
+
+        scheduleNotification(getNotification());
     }
 
-    private void updateNotification() {
+    private void scheduleNotification(Notification notificaion) {
         AlarmManager alarmMgr;
         PendingIntent alarmIntent;
 
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 999);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notificaion);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmMgr = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-
         alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + 60*1000, alarmIntent);
+                SystemClock.elapsedRealtime() + 10*1000, pendingIntent);
+    }
 
-        NotificationManager notificationManager = (NotificationManager) HomeActivity.this
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-
+    private Notification getNotification() {
 
         final String KEY_TEXT_REPLY = "key_text_reply";
-        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
-                .setLabel("Log")
-                .build();
-        NotificationCompat.Action action =
-                new NotificationCompat.Action.Builder(R.drawable.ic_notifications_black_24dp, "Hello", alarmIntent)
-                .addRemoteInput(remoteInput)
-                .build();
+
+        Intent notificaionResponseIntent = new Intent(this, HomeActivity.class);
+
+//        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+//                .setLabel("Log")
+//                .build();
+//        NotificationCompat.Action action =
+//                new NotificationCompat.Action.Builder(R.drawable.ic_notifications_black_24dp, "Hello", alarmIntent)
+//                        .addRemoteInput(remoteInput)
+//                        .build();
 
         Notification notification = new NotificationCompat.Builder(HomeActivity.this)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -433,19 +437,15 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true)
                 .setColor(getResources().getColor(R.color.colorPrimary))
-                .addAction(action)
+//                .addAction(action)
                 .setVibrate(new long[] { 500, 300, 800, 500, 1000})
-     //        { delay, vibrate, sleep, vibrate, sleep } pattern
+                .setStyle(new android.support.v4.app.NotificationCompat.InboxStyle())
+                //        { delay, vibrate, sleep, vibrate, sleep } pattern
                 .setLights(Color.YELLOW, 500, 1000)
+                .setSound(Uri.parse("android.resource://" + getBaseContext().getPackageName() + "/" + R.raw.notification_sound))
                 .build();
 
-        notification.defaults |= Notification.DEFAULT_SOUND;
-
-
-        notificationManager.notify(0, notification);
-
-
-
+        return notification;
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
