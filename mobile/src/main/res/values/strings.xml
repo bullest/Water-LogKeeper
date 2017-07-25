@@ -85,4 +85,13 @@
     <string name="feedback">Feedback</string>
     <string name="about">About</string>
     <string name="undo">Undo</string>
+    <string name="notification_input_hint">\"Input Water Volume in mL: \"</string>
+    <string-array name="notificaion_message">
+        <item>Water! Water! Water!</item>
+        <item>You are THIRSTY!</item>
+        <item>Time to drink.</item>
+        <item>H2O is helpful.</item>
+        <item>Brain works better with water.</item>
+        <item>Drink and rest.</item>
+    </string-array>
 </resources>

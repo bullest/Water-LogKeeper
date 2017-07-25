@@ -50,6 +50,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import static android.R.attr.data;
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
@@ -200,9 +201,6 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                         }).show();
             }
         });
-
-
-
     }
 
     private void configAddButtons() {
@@ -259,7 +257,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
                 EventBus.getDefault().post(new AddRecordEvent(amount, now));
 
-                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_SHORT)
                         .setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -278,7 +276,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
                 EventBus.getDefault().post(new AddRecordEvent(amount, now));
 
-                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_SHORT)
                         .setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -393,6 +391,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onAddAmountEvent(AddRecordEvent event) {
         WaterRecord record = new WaterRecord(event.amount, event.time.getTimeInMillis());
         record.save();
+        Log.d("WaterKeeper", "water: " + event.amount);
 //        DatabaseReference database = FirebaseDatabase.getInstance().getReference("users");
 //        database.child("user").child(uid).setValue(uid);
         updateDailyProgress();
@@ -418,30 +417,51 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
         final String KEY_TEXT_REPLY = "key_text_reply";
 
-        Intent notificaionResponseIntent = new Intent(this, HomeActivity.class);
+        Intent notificationResponseIntent = new Intent(this, HomeActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationResponseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
-//                .setLabel("Log")
-//                .build();
-//        NotificationCompat.Action action =
-//                new NotificationCompat.Action.Builder(R.drawable.ic_notifications_black_24dp, "Hello", alarmIntent)
-//                        .addRemoteInput(remoteInput)
-//                        .build();
+        // Dismiss Action
+        Intent dismissIntent = new Intent(this, DismissReciever.class);
+        PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(this, 0, dismissIntent, 0);
+        NotificationCompat.Action dismissAction =
+                new NotificationCompat.Action.Builder(R.drawable.ic_notifications_black_24dp, "Dismiss", dismissPendingIntent)
+                .build();
+
+        // TODO: 7/25/17 Implement snoozeAction
+        Intent snoozeIntent = new Intent(this, SnoozeReciever.class);
+        PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(this, 0, snoozeIntent, 0);
+        NotificationCompat.Action snoozeAction =
+                new NotificationCompat.Action.Builder(R.drawable.ic_notifications_black_24dp, "Snooze", snoozePendingIntent)
+                .build();
+
+        // Direct reply;
+        Intent replyIntent = new Intent(this, ReplyReciever.class);
+        PendingIntent replyPendingIntent = PendingIntent.getBroadcast(this, 0, replyIntent, 0);
+        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+                .setLabel(getString(R.string.notification_input_hint))
+                .build();
+        NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(R.drawable.ic_notifications_black_24dp, "Water Log", replyPendingIntent)
+                        .addRemoteInput(remoteInput)
+                        .build();
+
+        String[] notificationMessageArray = getApplicationContext().getResources().getStringArray(R.array.notificaion_message);
 
         Notification notification = new NotificationCompat.Builder(HomeActivity.this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker("Ticker Message")
-                .setContentTitle("Time to Drink")
-                .setContentText("Please drink a lot")
-                .setContentIntent(alarmIntent)
+                .setContentTitle(notificationMessageArray[new Random().nextInt(notificationMessageArray.length)])
+                .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true)
                 .setColor(getResources().getColor(R.color.colorPrimary))
-//                .addAction(action)
+                .addAction(action)
+                .addAction(dismissAction)
+                .setSmallIcon(R.drawable.ic_local_drink_lime_600_24dp)
                 .setVibrate(new long[] { 500, 300, 800, 500, 1000})
                 .setStyle(new android.support.v4.app.NotificationCompat.InboxStyle())
                 //        { delay, vibrate, sleep, vibrate, sleep } pattern
-                .setLights(Color.YELLOW, 500, 1000)
+                .setLights(Color.YELLOW, 500, 2000)
                 .setSound(Uri.parse("android.resource://" + getBaseContext().getPackageName() + "/" + R.raw.notification_sound))
                 .build();
 

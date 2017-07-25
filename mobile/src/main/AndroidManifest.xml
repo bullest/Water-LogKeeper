@@ -35,6 +35,8 @@
                 android:value="com.bullest.waterkeeper.HomeActivity"/>
         </activity>
         <receiver android:name=".NotificationPublisher"/>
+        <receiver android:name=".DismissReciever"/>
+        <receiver android:name=".ReplyReciever"/>
     </application>
 
 </manifest>
