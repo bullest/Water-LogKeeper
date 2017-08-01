@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_margin="4dp"
+            android:layout_margin="8dp"
             android:layout_marginTop="16dp">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,19 +84,10 @@
                     android:textSize="14sp"/>
                 <Button
                     android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="@string/_200ml"
-                    android:id="@+id/button_200"
-                    style="@style/Button"
-                    android:textAllCaps="false"
-                    android:textSize="14sp"/>
-                <Button
-                    android:layout_width="0dp"
                     android:layout_weight="1.1"
                     android:layout_height="wrap_content"
-                    android:text="@string/_300ml"
-                    android:id="@+id/button_300"
+                    android:text="@string/_250ml"
+                    android:id="@+id/button_250"
                     style="@style/Button"
                     android:textAllCaps="false"/>
                 <Button
@@ -113,7 +104,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="16dp">
                 <android.support.design.widget.TextInputEditText
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -126,14 +117,14 @@
                     android:selectAllOnFocus="true"/>
 
                 <Button
+                    android:id="@+id/button_confirm"
+                    style="@style/Button"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:id="@+id/button_confirm"
                     android:layout_margin="4dp"
-                    android:text="@string/confirm"
                     android:enabled="false"
-                    style="@style/Button"
-                    android:includeFontPadding="true"/>
+                    android:includeFontPadding="true"
+                    android:text="@string/confirm"/>
             </LinearLayout>
         </LinearLayout>
 

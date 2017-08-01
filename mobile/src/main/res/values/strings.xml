@@ -79,8 +79,7 @@
     qx2XX
     <string name="input_your_amount">Input your amount</string>
     <string name="_100ml">+100mL</string>
-    <string name="_200ml">+200mL</string>
-    <string name="_300ml">+300mL</string>
+    <string name="_250ml">+250mL</string>
     <string name="_400ml">+400mL</string>
     <string name="feedback">Feedback</string>
     <string name="about">About</string>

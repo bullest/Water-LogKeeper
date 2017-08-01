@@ -58,8 +58,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class HomeActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     Button button100;
-    Button button200;
-    Button button300;
+    Button button250;
     Button button400;
     Button button_confirm;
     EditText volume;
@@ -192,7 +191,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
                 EventBus.getDefault().post(new AddRecordEvent(amount, now));
 
-                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_SHORT)
                         .setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -206,8 +205,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
     private void configAddButtons() {
 
         button100 = (Button) findViewById(R.id.button_100);
-        button200 = (Button) findViewById(R.id.button_200);
-        button300 = (Button) findViewById(R.id.button_300);
+        button250 = (Button) findViewById(R.id.button_250);
         button400 = (Button) findViewById(R.id.button_400);
 
         button100.setOnClickListener(new View.OnClickListener() {
@@ -219,7 +217,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
                 EventBus.getDefault().post(new AddRecordEvent(amount, now));
 
-                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_SHORT)
                         .setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -229,31 +227,12 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
-        button200.setOnClickListener(new View.OnClickListener() {
+        button250.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar now = Calendar.getInstance();
 
-                final int amount = 200;
-
-                EventBus.getDefault().post(new AddRecordEvent(amount, now));
-
-                Snackbar.make(view, amount + "mL water is added", Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                EventBus.getDefault().post(new DeleteRecordEvent());
-                            }
-                        }).show();
-            }
-        });
-
-        button300.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar now = Calendar.getInstance();
-
-                final int amount = 300;
+                final int amount = 250;
 
                 EventBus.getDefault().post(new AddRecordEvent(amount, now));
 
@@ -285,9 +264,6 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                         }).show();
             }
         });
-
-
-
 
     }
 
@@ -409,8 +385,19 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmMgr = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + 10*1000, pendingIntent);
+
+        Calendar now = Calendar.getInstance();
+
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        if (hour<20) {
+            int min = new Random().nextInt(60);
+            min += 60;
+            alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + min*60*1000, pendingIntent);
+        } else {
+            alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + 12*60*60*1000, pendingIntent);        }
+
     }
 
     private Notification getNotification() {
@@ -424,24 +411,24 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         Intent dismissIntent = new Intent(this, DismissReciever.class);
         PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(this, 0, dismissIntent, 0);
         NotificationCompat.Action dismissAction =
-                new NotificationCompat.Action.Builder(R.drawable.ic_notifications_black_24dp, "Dismiss", dismissPendingIntent)
+                new NotificationCompat.Action.Builder(R.drawable.ic_clear_black_24dp, "Dismiss", dismissPendingIntent)
                 .build();
 
-        // TODO: 7/25/17 Implement snoozeAction
+        // TODO: 7/25/17 Implement snoozeAction. How to make it snooze?
         Intent snoozeIntent = new Intent(this, SnoozeReciever.class);
         PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(this, 0, snoozeIntent, 0);
         NotificationCompat.Action snoozeAction =
                 new NotificationCompat.Action.Builder(R.drawable.ic_notifications_black_24dp, "Snooze", snoozePendingIntent)
                 .build();
 
-        // Direct reply;
+        // TODO: Implement Direct reply; the flow of the digest the input is not finished
         Intent replyIntent = new Intent(this, ReplyReciever.class);
         PendingIntent replyPendingIntent = PendingIntent.getBroadcast(this, 0, replyIntent, 0);
         RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
                 .setLabel(getString(R.string.notification_input_hint))
                 .build();
-        NotificationCompat.Action action =
-                new NotificationCompat.Action.Builder(R.drawable.ic_notifications_black_24dp, "Water Log", replyPendingIntent)
+        NotificationCompat.Action replyAction =
+                new NotificationCompat.Action.Builder(R.drawable.ic_assignment_black_24dp, "Water Log", replyPendingIntent)
                         .addRemoteInput(remoteInput)
                         .build();
 
@@ -449,16 +436,16 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
         Notification notification = new NotificationCompat.Builder(HomeActivity.this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker("Ticker Message")
-                .setContentTitle(notificationMessageArray[new Random().nextInt(notificationMessageArray.length)])
+                .setContentTitle("Time to Drink")
+                .setContentText(notificationMessageArray[new Random().nextInt(notificationMessageArray.length)])
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true)
-                .setColor(getResources().getColor(R.color.colorPrimary))
-                .addAction(action)
+//                .setColor(getResources().getColor(R.color.colorPrimary))
+//                .addAction(replyAction)
                 .addAction(dismissAction)
                 .setSmallIcon(R.drawable.ic_local_drink_lime_600_24dp)
-                .setVibrate(new long[] { 500, 300, 800, 500, 1000})
+                .setVibrate(new long[] { 500, 300, 400, 500, 1000})
                 .setStyle(new android.support.v4.app.NotificationCompat.InboxStyle())
                 //        { delay, vibrate, sleep, vibrate, sleep } pattern
                 .setLights(Color.YELLOW, 500, 2000)
@@ -483,7 +470,6 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
     private void updateDailyWaterProgress() {
         float currentWater = 0;
 
-        Calendar now = Calendar.getInstance();
         Calendar todayTime = Calendar.getInstance();;
         todayTime.set(Calendar.HOUR_OF_DAY, 2);
         todayTime.set(Calendar.MINUTE,0);
