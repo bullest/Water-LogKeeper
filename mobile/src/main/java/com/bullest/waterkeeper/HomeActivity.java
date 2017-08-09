@@ -85,7 +85,6 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         configAddButtons();
         configCustomAddButtons();
         configSignIn();
-        configProgress();
     }
 
     private void configProgress() {
@@ -342,6 +341,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     public void onStart() {
         super.onStart();
+        configProgress();
         EventBus.getDefault().register(this);
         if (uid == null) {
             mAuth.addAuthStateListener(mAuthListener);
@@ -372,7 +372,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 //        database.child("user").child(uid).setValue(uid);
         updateDailyProgress();
 
-        scheduleNotification(getNotification());
+        scheduleNotification(MyNotification.build(HomeActivity.this));
     }
 
     private void scheduleNotification(Notification notificaion) {
